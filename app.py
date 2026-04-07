@@ -41,9 +41,7 @@ import uuid
 
 import os
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-    
+
 # ── CREATE THE FLASK APP ────────────────────────────────────────────────
 # This one line creates our entire web application object.
 # Think of it as: "open the restaurant for business."
@@ -988,8 +986,11 @@ def journal_route():
 # was run directly (not imported)."
 # This is the standard Python pattern for runnable scripts.
 
-if __name__ == "__main__":
+""" if __name__ == "__main__":
     # debug=True → Flask shows detailed error pages and reloads automatically
     #              when you save changes. NEVER use debug=True in production.
     # port=5000   → The URL will be http://127.0.0.1:5000
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000) """
+if __name__ == "__main__":
+    import os
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
