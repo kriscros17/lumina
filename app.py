@@ -39,7 +39,11 @@ import math
 import uuid
 # uuid        → generates unique random IDs (like fingerprints for records)
 
+import os
 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    
 # ── CREATE THE FLASK APP ────────────────────────────────────────────────
 # This one line creates our entire web application object.
 # Think of it as: "open the restaurant for business."
