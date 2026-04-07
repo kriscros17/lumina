@@ -1,0 +1,2655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumina — A Wellness & Soul Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Special+Elite&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+
+/* ═══════════════════════════════════════════════════
+   ROOT & PAPER FOUNDATION
+═══════════════════════════════════════════════════ */
+:root {
+  --paper:     #F2E8D5;
+  --paper-2:   #EAD9BE;
+  --paper-3:   #E0CBA8;
+  --ink:       #2C1810;
+  --ink-light: #4A3020;
+  --ink-faded: #7A5C42;
+  --ink-ghost: rgba(44,24,16,0.25);
+  --red:       #8B2E1A;
+  --gold:      #9B6E2A;
+  --sepia:     #6B4820;
+  --blue-ink:  #1E3A5F;
+  --border:    rgba(44,24,16,0.18);
+  --border-strong: rgba(44,24,16,0.35);
+
+  --font-title: 'IM Fell English', serif;
+  --font-type:  'Special Elite', cursive;
+  --font-body:  'Lora', serif;
+  --font-mono:  'Courier Prime', monospace;
+
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background-color: #D4B896;
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  /* Aged paper texture via CSS */
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(180,140,80,0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(160,110,60,0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(200,170,110,0.15) 0%, transparent 70%);
+}
+
+/* Parchment texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23paper)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+}
+
+/* Ink stain decorations */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; right: 0;
+  width: 280px; height: 280px;
+  background: radial-gradient(ellipse, rgba(44,24,16,0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   LAYOUT WRAPPER
+═══════════════════════════════════════════════════ */
+.journal {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+
+/* ═══════════════════════════════════════════════════
+   MASTHEAD / HEADER
+═══════════════════════════════════════════════════ */
+.masthead {
+  text-align: center;
+  padding: 44px 20px 28px;
+  border-bottom: 2px solid var(--border-strong);
+  margin-bottom: 0;
+  position: relative;
+}
+
+.masthead-top {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 10px;
+}
+
+.masthead-title {
+  font-family: var(--font-title);
+  font-size: clamp(3.2rem, 9vw, 5.5rem);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 0.9;
+  letter-spacing: 0.05em;
+}
+
+.masthead-title em {
+  font-style: italic;
+  color: var(--red);
+}
+
+.masthead-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 12px 0 10px;
+  color: var(--ink-faded);
+  font-size: 0.9rem;
+}
+
+.masthead-rule::before, .masthead-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  max-width: 140px;
+  background: var(--border-strong);
+}
+
+.masthead-sub {
+  font-family: var(--font-type);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-faded);
+  text-transform: uppercase;
+}
+
+.masthead-date {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--ink-ghost);
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+/* Moon widget in masthead corner */
+.moon-corner {
+  position: absolute;
+  top: 20px;
+  right: 16px;
+  text-align: center;
+  width: 70px;
+}
+.moon-emoji { font-size: 1.8rem; display: block; line-height: 1; }
+.moon-phase-name {
+  font-family: var(--font-mono);
+  font-size: 0.45rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-top: 3px;
+  line-height: 1.3;
+}
+@media (max-width: 480px) { .moon-corner { display: none; } }
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION — NEWSPAPER SECTION TABS
+═══════════════════════════════════════════════════ */
+.section-nav {
+  display: flex;
+  border-bottom: 2px solid var(--border-strong);
+  background: var(--paper-2);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-tab {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 8px 10px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border);
+  border-bottom: 3px solid transparent;
+  font-family: var(--font-type);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.nav-tab:last-child { border-right: none; }
+.nav-tab:hover { background: rgba(44,24,16,0.04); color: var(--ink); }
+.nav-tab.active {
+  color: var(--red);
+  border-bottom-color: var(--red);
+  background: var(--paper);
+}
+
+/* ═══════════════════════════════════════════════════
+   TAB PANELS
+═══════════════════════════════════════════════════ */
+.panel { display: none; animation: inkFade 0.4s var(--ease); }
+.panel.active { display: block; }
+
+@keyframes inkFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════
+   PAPER CARD
+═══════════════════════════════════════════════════ */
+.page {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 28px;
+  margin: 20px 0;
+  position: relative;
+  box-shadow:
+    2px 2px 0 rgba(44,24,16,0.06),
+    4px 4px 0 rgba(44,24,16,0.04),
+    0 6px 24px rgba(44,24,16,0.12);
+}
+
+/* Red margin line (like a real journal page) */
+.page::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 48px;
+  width: 1px;
+  background: rgba(139,46,26,0.2);
+  pointer-events: none;
+}
+
+.page-title {
+  font-family: var(--font-type);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-title::before {
+  content: '§';
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: var(--gold);
+  font-style: italic;
+}
+
+/* Corner fold effect */
+.page::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 0 22px 22px;
+  border-color: transparent transparent var(--paper-3) transparent;
+  filter: drop-shadow(-1px -1px 0 rgba(44,24,16,0.1));
+}
+
+/* ═══════════════════════════════════════════════════
+   SLIDERS — ANTIQUE GAUGE STYLE
+═══════════════════════════════════════════════════ */
+.slider-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 36px;
+}
+@media (max-width: 540px) { .slider-grid { grid-template-columns: 1fr; } }
+
+.slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.slider-label {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-light);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.s-glyph {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--gold);
+  width: 18px;
+  text-align: center;
+}
+
+.slider-val {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--sepia);
+  letter-spacing: 0.05em;
+}
+
+/* The actual range input */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 0;
+  background:
+    linear-gradient(to right,
+      var(--ink-faded) var(--p, 50%),
+      rgba(44,24,16,0.15) var(--p, 50%));
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--ink-light);
+  box-shadow: 0 1px 4px rgba(44,24,16,0.25);
+  margin-top: -5.5px;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+  border-color: var(--red);
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.4);
+  border-color: var(--red);
+}
+
+.slider-ends {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-ghost);
+  font-style: italic;
+}
+
+.wide-col { grid-column: span 2; }
+@media (max-width: 540px) { .wide-col { grid-column: span 1; } }
+
+/* ═══════════════════════════════════════════════════
+   SUBMIT BUTTON — LETTERPRESS STAMP STYLE
+═══════════════════════════════════════════════════ */
+.btn-row { text-align: center; margin-top: 26px; }
+
+.btn-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 40px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  font-family: var(--font-type);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 var(--sepia), 5px 5px 0 rgba(44,24,16,0.15);
+  transition: all 0.15s;
+  position: relative;
+}
+
+.btn-stamp:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--sepia), 6px 6px 0 rgba(44,24,16,0.15);
+}
+
+.btn-stamp:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--sepia);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 24px;
+  background: transparent;
+  color: var(--ink-faded);
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { background: var(--paper-2); color: var(--ink); }
+
+/* Loader dots */
+.loader { display: none; justify-content: center; gap: 5px; padding: 10px 0; }
+.loader.on { display: flex; }
+.dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--ink-faded);
+  animation: dip 1.1s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.18s; }
+.dot:nth-child(3) { animation-delay: 0.36s; }
+@keyframes dip {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+  40%           { transform: translateY(-7px); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════
+   WELLNESS RESULTS
+═══════════════════════════════════════════════════ */
+#wellness-results {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  pointer-events: none;
+}
+#wellness-results.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+/* Mood proclamation */
+.mood-proclamation {
+  text-align: center;
+  padding: 32px 20px 24px;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 24px;
+}
+
+.mood-symbol {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  color: var(--result-ink, var(--gold));
+  display: block;
+  margin-bottom: 8px;
+  animation: gentleFloat 4s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+.mood-name-display {
+  font-family: var(--font-title);
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  font-style: italic;
+  color: var(--result-ink, var(--gold));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-shadow: 2px 2px 0 rgba(44,24,16,0.08);
+}
+
+.mood-desc-text {
+  max-width: 440px;
+  margin: 14px auto 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--ink-faded);
+}
+
+/* Score dial — old thermometer style */
+.score-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.score-thermometer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.thermo-bar {
+  width: 28px;
+  height: 120px;
+  background: rgba(44,24,16,0.1);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.thermo-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  background: var(--result-ink, var(--gold));
+  transition: height 1.4s var(--ease);
+  border-radius: 14px;
+}
+
+.thermo-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+
+.score-number-big {
+  font-family: var(--font-title);
+  font-size: 3.8rem;
+  font-style: italic;
+  color: var(--result-ink, var(--gold));
+  line-height: 1;
+}
+
+.score-number-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+
+/* Colour palette — wax seal style */
+.palette-heading {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.palette-seals {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.seal:hover { transform: translateY(-4px) rotate(3deg); }
+
+.seal-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(44,24,16,0.15);
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 3px 8px rgba(44,24,16,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.seal-circle::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+
+.seal-hex {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  color: var(--ink-faded);
+  letter-spacing: 0.04em;
+}
+
+/* Info tiles — ruled notecard style */
+.notecard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+@media (max-width: 520px) { .notecard-grid { grid-template-columns: 1fr; } }
+
+.notecard {
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.notecard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--result-ink, var(--gold));
+  opacity: 0.5;
+}
+
+.nc-glyph {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.nc-label {
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 5px;
+}
+
+.nc-body {
+  font-size: 0.83rem;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--ink-light);
+  font-style: italic;
+}
+
+.affirmation-card {
+  grid-column: span 2;
+  text-align: center;
+  background: var(--paper);
+  border: 1px solid var(--border-strong);
+  padding: 22px;
+}
+@media (max-width: 520px) { .affirmation-card { grid-column: span 1; } }
+
+.affirmation-quote {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.55;
+  color: var(--result-ink, var(--sepia));
+  transition: color 1s;
+}
+
+.affirmation-mark {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  color: var(--gold);
+  opacity: 0.4;
+  display: block;
+  line-height: 0.8;
+}
+
+/* Breakdown bars — ruled ledger style */
+.ledger-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(44,24,16,0.07);
+}
+
+.ledger-key {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faded);
+  text-align: right;
+  font-style: italic;
+}
+
+.ledger-track {
+  height: 4px;
+  background: rgba(44,24,16,0.08);
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.ledger-fill {
+  height: 100%;
+  background: var(--result-ink, var(--sepia));
+  width: 0;
+  transition: width 1.1s var(--ease);
+  border-radius: 0;
+}
+
+.ledger-val {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--result-ink, var(--sepia));
+  transition: color 1s;
+}
+
+/* Breathing exercise */
+.breath-circle {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  margin: 18px auto;
+  border: 1px solid var(--border-strong);
+  background: var(--paper-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faded);
+  cursor: pointer;
+  transition: all 0.8s ease;
+}
+.breath-circle.inhale {
+  transform: scale(1.3);
+  background: var(--paper);
+  border-color: var(--result-ink, var(--gold));
+  box-shadow: 0 0 20px rgba(44,24,16,0.1);
+  color: var(--ink);
+}
+.breath-circle.exhale { transform: scale(1); }
+
+.breath-name {
+  font-family: var(--font-type);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faded);
+  text-align: center;
+}
+
+.breath-phase {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  text-align: center;
+  margin-top: 8px;
+  min-height: 1.2em;
+}
+
+/* History entries */
+.history-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px dashed var(--border);
+  transition: background 0.2s;
+}
+.history-entry:last-child { border-bottom: none; }
+.history-entry:hover { background: var(--paper-2); }
+
+.h-glyph {
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-style: italic;
+  min-width: 24px;
+  text-align: center;
+}
+
+.h-info { flex: 1; }
+.h-mood-name { font-family: var(--font-body); font-size: 0.88rem; font-style: italic; }
+.h-time { font-family: var(--font-mono); font-size: 0.56rem; color: var(--ink-faded); letter-spacing: 0.05em; }
+.h-score-val { font-family: var(--font-mono); font-size: 0.75rem; color: var(--sepia); }
+
+/* ═══════════════════════════════════════════════════
+   PERSONALITY QUIZ
+═══════════════════════════════════════════════════ */
+.quiz-intro-body {
+  text-align: center;
+  padding: 24px 12px;
+}
+
+.intro-headline {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 2rem;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.intro-copy {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--ink-faded);
+  max-width: 400px;
+  margin: 0 auto 20px;
+}
+
+.system-pills {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.sys-pill {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  color: var(--ink-faded);
+  background: var(--paper-2);
+}
+
+/* Progress line */
+.quiz-progress-wrap { margin-bottom: 16px; }
+.quiz-progress-track {
+  height: 2px;
+  background: rgba(44,24,16,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.quiz-progress-fill {
+  height: 100%;
+  background: var(--red);
+  width: 0%;
+  transition: width 0.4s var(--ease);
+}
+.quiz-meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faded);
+}
+
+/* Question */
+.question-area { min-height: 360px; position: relative; }
+
+.q-slide {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  opacity: 0; transform: translateX(20px);
+  transition: opacity 0.32s var(--ease), transform 0.32s var(--ease);
+  pointer-events: none;
+}
+.q-slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+.q-slide.exit   { opacity: 0; transform: translateX(-20px); }
+
+.q-number {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-ghost);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.q-text {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  color: var(--ink);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.q-section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
+
+.options-col { display: flex; flex-direction: column; gap: 9px; }
+
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.opt:hover { border-left-color: var(--gold); background: var(--paper-2); }
+.opt.chosen { border-left-color: var(--red); background: rgba(139,46,26,0.04); }
+
+.opt-key {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  min-width: 16px;
+  margin-top: 1px;
+  font-weight: 700;
+}
+
+.opt-txt {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink-light);
+}
+
+.quiz-nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+/* ═══════════════════════════════════════════════════
+   YOUR READING PANEL
+═══════════════════════════════════════════════════ */
+#personality-results { display: none; }
+#personality-results.show { display: block; }
+
+/* Trinity row */
+.trinity-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+@media (max-width: 520px) { .trinity-row { grid-template-columns: 1fr; } }
+
+.trinity-tile {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  padding: 18px 12px;
+  text-align: center;
+  position: relative;
+  border-top: 3px solid var(--tc, var(--gold));
+  transition: transform 0.2s;
+}
+.trinity-tile:hover { transform: translateY(-2px); }
+
+.tt-system {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 6px;
+}
+.tt-type {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-style: italic;
+  color: var(--tc, var(--gold));
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.tt-name {
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faded);
+}
+
+/* Profile sections */
+.profile-block { margin-top: 0; }
+
+.profile-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.profile-stamp {
+  min-width: 52px;
+  height: 52px;
+  border: 2px solid var(--tc, var(--sepia));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--tc, var(--sepia));
+  background: var(--paper-2);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.profile-stamp::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid var(--tc, var(--sepia));
+  opacity: 0.3;
+}
+
+.profile-main-name {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.profile-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faded);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.profile-body-text {
+  font-size: 0.87rem;
+  font-style: italic;
+  line-height: 1.82;
+  color: var(--ink-light);
+  margin-bottom: 14px;
+}
+
+.strengths-wrap { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+
+.strength-chip {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  color: var(--ink-faded);
+  background: var(--paper-2);
+}
+
+/* Shadow / growth block */
+.shadow-block {
+  background: var(--paper-2);
+  border-left: 3px solid var(--border-strong);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.shadow-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 4px;
+}
+.shadow-txt {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--ink-faded);
+  line-height: 1.65;
+}
+
+/* Partner box */
+.partner-block {
+  border: 1px solid var(--border-strong);
+  border-top: 3px solid var(--tc, var(--gold));
+  padding: 16px;
+  background: var(--paper);
+}
+.partner-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tc, var(--gold));
+  margin-bottom: 10px;
+}
+.partner-chips-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.partner-chip {
+  font-family: var(--font-type);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  border: 1px solid var(--tc, var(--gold));
+  color: var(--tc, var(--gold));
+  background: transparent;
+}
+.partner-reason-text {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--ink-faded);
+  line-height: 1.7;
+}
+
+/* Axis score bars */
+.axis-block { margin-top: 14px; }
+.axis-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+@media (max-width: 480px) { .axis-row { grid-template-columns: 1fr; } }
+
+.ax-item { display: flex; flex-direction: column; gap: 4px; }
+.ax-header { display: flex; justify-content: space-between; }
+.ax-name { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.08em; color: var(--ink-faded); }
+.ax-val  { font-family: var(--font-mono); font-size: 0.56rem; color: var(--tc, var(--sepia)); }
+.ax-track { height: 3px; background: rgba(44,24,16,0.1); overflow: hidden; }
+.ax-fill  { height: 100%; background: var(--tc, var(--sepia)); width: 0; transition: width 1s var(--ease); }
+
+/* Accordion */
+.accordion-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  text-align: left;
+}
+.accordion-chevron { font-family: var(--font-mono); font-size: 0.7rem; color: var(--gold); transition: transform 0.25s; }
+.accordion-head.open .accordion-chevron { transform: rotate(180deg); }
+.accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.55s var(--ease); }
+.accordion-body.open { max-height: 1200px; }
+
+/* Synthesis card */
+.synthesis-block {
+  border: 2px solid var(--border-strong);
+  background: var(--paper);
+  padding: 28px;
+  position: relative;
+}
+
+.synthesis-block::before {
+  content: '❧';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--paper);
+  padding: 0 10px;
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.synth-headline {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--sepia);
+  margin-bottom: 18px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.synth-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+@media (max-width: 480px) { .synth-tiles { grid-template-columns: 1fr; } }
+
+.synth-tile {
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  padding: 13px;
+}
+.synth-tile-lbl { font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 5px; }
+.synth-tile-val { font-family: var(--font-body); font-style: italic; font-size: 0.85rem; color: var(--ink-light); line-height: 1.6; }
+
+.synth-body { font-family: var(--font-body); font-style: italic; font-size: 0.86rem; line-height: 1.85; color: var(--ink-faded); margin-bottom: 18px; }
+
+.red-flag-title { font-family: var(--font-mono); font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; opacity: 0.8; }
+.red-flag-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 7px; }
+.rf-mark { font-family: var(--font-title); font-style: italic; font-size: 0.9rem; color: var(--red); opacity: 0.6; flex-shrink: 0; margin-top: 1px; }
+.rf-text { font-family: var(--font-body); font-style: italic; font-size: 0.82rem; color: var(--ink-faded); line-height: 1.6; }
+
+/* Reading empty state */
+.reading-empty-state { text-align: center; padding: 48px 20px; }
+.empty-glyph { font-family: var(--font-title); font-style: italic; font-size: 2.8rem; color: var(--gold); opacity: 0.3; display: block; margin-bottom: 14px; }
+.empty-copy { font-family: var(--font-body); font-style: italic; font-size: 0.9rem; color: var(--ink-faded); line-height: 1.8; max-width: 320px; margin: 0 auto 20px; }
+
+/* ═══════════════════════════════════════════════════
+   GRATITUDE JOURNAL (NEW FEATURE)
+═══════════════════════════════════════════════════ */
+.journal-intro {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--ink-faded);
+  line-height: 1.8;
+  margin-bottom: 20px;
+  border-left: 3px solid var(--gold);
+  padding-left: 14px;
+}
+
+.gratitude-field-wrap { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+
+.gratitude-field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.field-number {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--gold);
+  opacity: 0.5;
+  min-width: 24px;
+  text-align: center;
+}
+
+.gratitude-input {
+  flex: 1;
+  background: var(--paper-2);
+  border: none;
+  border-bottom: 1px solid var(--border-strong);
+  padding: 9px 4px;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.gratitude-input::placeholder { color: var(--ink-ghost); }
+.gratitude-input:focus { border-bottom-color: var(--gold); }
+
+.gratitude-prompt {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* Saved entries */
+.journal-saved-entries { margin-top: 20px; }
+
+.journal-record {
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  background: var(--paper);
+}
+
+.journal-record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.jr-date { font-family: var(--font-type); font-size: 0.65rem; letter-spacing: 0.08em; color: var(--ink-faded); }
+.jr-time { font-family: var(--font-mono); font-size: 0.54rem; color: var(--ink-ghost); }
+
+.journal-record-entries { padding: 10px 14px; }
+
+.jr-entry {
+  display: flex;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(44,24,16,0.07);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.84rem;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+.jr-entry:last-child { border-bottom: none; }
+.jr-bullet { color: var(--gold); font-family: var(--font-title); }
+
+/* ═══════════════════════════════════════════════════
+   MOON PANEL
+═══════════════════════════════════════════════════ */
+.moon-display {
+  text-align: center;
+  padding: 24px 12px;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 20px;
+}
+
+.moon-big-emoji { font-size: 4rem; display: block; margin-bottom: 10px; animation: gentleFloat 5s ease-in-out infinite; }
+.moon-phase-title { font-family: var(--font-title); font-style: italic; font-size: 2.2rem; color: var(--ink); margin-bottom: 6px; }
+.moon-phase-desc { font-family: var(--font-body); font-style: italic; font-size: 0.9rem; color: var(--ink-faded); line-height: 1.75; max-width: 380px; margin: 0 auto; }
+
+.moon-illumination-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 260px;
+  margin: 16px auto 0;
+}
+.moon-illum-label { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faded); }
+.moon-illum-track { flex: 1; height: 3px; background: rgba(44,24,16,0.1); }
+.moon-illum-fill { height: 100%; background: var(--sepia); transition: width 1s var(--ease); }
+.moon-illum-pct { font-family: var(--font-mono); font-size: 0.6rem; color: var(--sepia); min-width: 32px; }
+
+.moon-wellness-note {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.84rem;
+  color: var(--ink-faded);
+  line-height: 1.75;
+  text-align: center;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  background: var(--paper-2);
+}
+
+/* ═══════════════════════════════════════════════════
+   COLOUR THERAPY SECTION
+═══════════════════════════════════════════════════ */
+.color-therapy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 500px) { .color-therapy-grid { grid-template-columns: 1fr; } }
+
+.ct-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  padding: 14px;
+}
+
+.ct-swatch { height: 32px; border-radius: 2px; margin-bottom: 10px; }
+.ct-title { font-family: var(--font-type); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--ink); margin-bottom: 6px; }
+.ct-meaning { font-family: var(--font-body); font-style: italic; font-size: 0.78rem; color: var(--ink-faded); line-height: 1.65; margin-bottom: 8px; }
+.ct-good { font-family: var(--font-mono); font-size: 0.54rem; letter-spacing: 0.06em; color: var(--sepia); }
+.ct-label { font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-ghost); margin-bottom: 2px; }
+
+/* ═══════════════════════════════════════════════════
+   DIVIDERS & MISC
+═══════════════════════════════════════════════════ */
+.ink-rule {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 18px 0;
+}
+
+.dashed-rule {
+  border: none;
+  border-top: 1px dashed var(--border);
+  margin: 14px 0;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  padding: 8px 18px;
+  border-radius: 2px;
+  opacity: 0;
+  transition: all 0.3s var(--ease);
+  pointer-events: none;
+  z-index: 999;
+  box-shadow: 3px 3px 0 var(--sepia);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 28px 0 12px;
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+</style>
+</head>
+<body>
+
+<div class="journal">
+
+  <!-- ═══════════════════════════════════════
+       MASTHEAD
+  ════════════════════════════════════════ -->
+  <header class="masthead">
+    <div class="moon-corner" id="moon-corner">
+      <span class="moon-emoji" id="corner-moon-emoji">🌙</span>
+      <div class="moon-phase-name" id="corner-moon-phase">Loading…</div>
+    </div>
+    <div class="masthead-top">Est. in the quiet hours &bull; A personal record</div>
+    <h1 class="masthead-title">Lu<em>mina</em></h1>
+    <div class="masthead-rule">✦</div>
+    <div class="masthead-sub">Wellness &middot; Soul &middot; Compatibility &middot; Moon</div>
+    <div class="masthead-date" id="today-date"></div>
+  </header>
+
+  <!-- ═══════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════════ -->
+  <nav class="section-nav">
+    <button class="nav-tab active" data-panel="wellness" onclick="showPanel('wellness')">I. Wellness</button>
+    <button class="nav-tab" data-panel="personality" onclick="showPanel('personality')">II. Personality</button>
+    <button class="nav-tab" data-panel="reading" onclick="showPanel('reading')">III. Your Reading</button>
+    <button class="nav-tab" data-panel="journal" onclick="showPanel('journal')">IV. Journal</button>
+    <button class="nav-tab" data-panel="moon" onclick="showPanel('moon')">V. Moon</button>
+    <button class="nav-tab" data-panel="colortherapy" onclick="showPanel('colortherapy')">VI. Colour</button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════
+       I. WELLNESS
+  ════════════════════════════════════════ -->
+  <div class="panel active" id="panel-wellness">
+
+    <div class="page">
+      <div class="page-title">How are you today?</div>
+
+      <div class="slider-grid">
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-label"><span class="s-glyph">☾</span> Sleep Quality</span>
+            <span class="slider-val" id="v-sleep">5</span>
+          </div>
+          <input type="range" id="sl-sleep" min="0" max="10" value="5" step="0.5"/>
+          <div class="slider-ends"><span>Restless</span><span>Deep & long</span></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-label"><span class="s-glyph">◎</span> Stress Level</span>
+            <span class="slider-val" id="v-stress">5</span>
+          </div>
+          <input type="range" id="sl-stress" min="0" max="10" value="5" step="0.5"/>
+          <div class="slider-ends"><span>Zen calm</span><span>Overwhelmed</span></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-label"><span class="s-glyph">✦</span> Energy Level</span>
+            <span class="slider-val" id="v-energy">5</span>
+          </div>
+          <input type="range" id="sl-energy" min="0" max="10" value="5" step="0.5"/>
+          <div class="slider-ends"><span>Drained</span><span>Vibrant</span></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-label"><span class="s-glyph">♡</span> Inner Mood</span>
+            <span class="slider-val" id="v-mood">5</span>
+          </div>
+          <input type="range" id="sl-mood" min="0" max="10" value="5" step="0.5"/>
+          <div class="slider-ends"><span>Heavy</span><span>Joyful</span></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-label"><span class="s-glyph">⊕</span> Physical Activity</span>
+            <span class="slider-val" id="v-activity">5</span>
+          </div>
+          <input type="range" id="sl-activity" min="0" max="10" value="5" step="0.5"/>
+          <div class="slider-ends"><span>None today</span><span>Very active</span></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-label"><span class="s-glyph">⊗</span> Social Connection</span>
+            <span class="slider-val" id="v-social">5</span>
+          </div>
+          <input type="range" id="sl-social" min="0" max="10" value="5" step="0.5"/>
+          <div class="slider-ends"><span>Isolated</span><span>Deeply connected</span></div>
+        </div>
+
+        <div class="slider-row wide-col">
+          <div class="slider-header">
+            <span class="slider-label"><span class="s-glyph">∿</span> Hydration</span>
+            <span class="slider-val" id="v-hydration">5</span>
+          </div>
+          <input type="range" id="sl-hydration" min="0" max="10" value="5" step="0.5"/>
+          <div class="slider-ends"><span>Barely any water</span><span>Well hydrated</span></div>
+        </div>
+
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-stamp" id="w-btn" onclick="calcWellness()">
+          ✦ &nbsp; Read My Wellness
+        </button>
+      </div>
+      <div class="loader" id="w-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <!-- Results -->
+    <div id="wellness-results">
+
+      <div class="page">
+        <div class="mood-proclamation">
+          <span class="mood-symbol" id="r-symbol">✦</span>
+          <div class="mood-name-display" id="r-mood">—</div>
+          <p class="mood-desc-text" id="r-desc"></p>
+        </div>
+
+        <div class="score-area">
+          <div class="score-thermometer">
+            <div class="thermo-bar"><div class="thermo-fill" id="thermo-fill"></div></div>
+            <div class="thermo-label">Wellness</div>
+          </div>
+          <div style="text-align:center">
+            <div class="score-number-big" id="score-big">0</div>
+            <div class="score-number-label">out of 100</div>
+          </div>
+        </div>
+
+        <hr class="dashed-rule"/>
+
+        <div class="palette-heading">Your Mood Palette — click a seal to copy the colour</div>
+        <div class="palette-seals" id="palette-row"></div>
+      </div>
+
+      <div class="notecard-grid">
+        <div class="notecard">
+          <span class="nc-glyph">☛</span>
+          <div class="nc-label">Wellness Tip</div>
+          <div class="nc-body" id="r-tip"></div>
+        </div>
+        <div class="notecard">
+          <span class="nc-glyph">❧</span>
+          <div class="nc-label">Suggested Activity</div>
+          <div class="nc-body" id="r-activity"></div>
+        </div>
+        <div class="notecard">
+          <span class="nc-glyph">✤</span>
+          <div class="nc-label">Your Element Today</div>
+          <div class="nc-body" id="r-element"></div>
+        </div>
+        <div class="notecard">
+          <span class="nc-glyph">◉</span>
+          <div class="nc-label">Colour Therapy</div>
+          <div class="nc-body" id="r-colour"></div>
+        </div>
+        <div class="notecard affirmation-card">
+          <span class="affirmation-mark">&ldquo;</span>
+          <div class="affirmation-quote" id="r-affirmation"></div>
+          <span class="affirmation-mark" style="transform:scaleX(-1);display:inline-block">&rdquo;</span>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-title">Score Breakdown — Ledger</div>
+        <div id="breakdown-rows"></div>
+      </div>
+
+      <div class="page">
+        <div class="page-title">Guided Breathing</div>
+        <div style="text-align:center">
+          <div class="breath-name" id="breath-name-lbl">—</div>
+          <div class="breath-circle" id="breath-ring">Begin</div>
+          <button class="btn-ghost" id="breath-btn" onclick="toggleBreath()">▷ Start</button>
+          <div class="breath-phase" id="breath-phase"></div>
+        </div>
+      </div>
+
+      <div class="page" id="history-page" style="display:none">
+        <div class="page-title">Mood History</div>
+        <div id="history-list"></div>
+      </div>
+
+    </div><!-- /wellness-results -->
+  </div><!-- /panel-wellness -->
+
+  <!-- ═══════════════════════════════════════
+       II. PERSONALITY QUIZ
+  ════════════════════════════════════════ -->
+  <div class="panel" id="panel-personality">
+
+    <!-- Intro -->
+    <div class="page" id="quiz-intro">
+      <div class="quiz-intro-body">
+        <div class="intro-headline">Discover Your Inner Blueprint</div>
+        <p class="intro-copy">Twenty carefully considered questions. Three complete personality frameworks, scored simultaneously. One coherent picture of who you are — and who you need beside you.</p>
+        <div class="system-pills">
+          <span class="sys-pill">MBTI 16-Types</span>
+          <span class="sys-pill">DISC Behavioural</span>
+          <span class="sys-pill">Four Temperaments</span>
+          <span class="sys-pill">Partner Compatibility</span>
+        </div>
+        <button class="btn-stamp" onclick="startQuiz()">✦ &nbsp; Begin the Reading</button>
+      </div>
+    </div>
+
+    <!-- Active quiz -->
+    <div id="quiz-active" style="display:none">
+      <div class="page">
+        <div class="quiz-progress-wrap">
+          <div class="quiz-progress-track"><div class="quiz-progress-fill" id="q-prog"></div></div>
+          <div class="quiz-meta-row">
+            <span id="q-counter">Question 1 of 20</span>
+            <span id="q-answered">0 answered</span>
+          </div>
+        </div>
+        <div class="question-area" id="question-area"></div>
+        <div class="quiz-nav-row">
+          <button class="btn-ghost" id="q-back" onclick="prevQ()" style="display:none">← Back</button>
+          <div></div>
+          <span style="font-family:var(--font-mono);font-size:0.56rem;color:var(--ink-faded);letter-spacing:0.1em" id="q-section-lbl"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complete screen -->
+    <div id="quiz-done" style="display:none" class="page">
+      <div class="quiz-intro-body">
+        <div class="intro-headline" style="margin-bottom:8px">Consulting the Oracle…</div>
+        <p class="intro-copy" style="margin-bottom:16px">The reading is being composed across all three frameworks.</p>
+        <div class="loader on" style="justify-content:center"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+    </div>
+
+  </div><!-- /panel-personality -->
+
+  <!-- ═══════════════════════════════════════
+       III. YOUR READING
+  ════════════════════════════════════════ -->
+  <div class="panel" id="panel-reading">
+
+    <div class="page" id="reading-empty">
+      <div class="reading-empty-state">
+        <span class="empty-glyph">☽</span>
+        <p class="empty-copy">Complete the Wellness check-in or the Personality test to receive your full reading here.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-ghost" onclick="showPanel('wellness')">→ Wellness</button>
+          <button class="btn-ghost" onclick="showPanel('personality')">→ Personality</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="personality-results">
+
+      <!-- Trinity -->
+      <div class="trinity-row" id="trinity-row"></div>
+
+      <!-- MBTI -->
+      <div class="page">
+        <button class="accordion-head open" onclick="toggleAcc(this)">
+          <div class="page-title" style="margin-bottom:0;border:none;padding:0">MBTI — 16 Personality Types</div>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body open" id="mbti-body">
+          <div class="profile-block">
+            <div class="profile-header-row">
+              <div class="profile-stamp" id="mbti-stamp" style="--tc:var(--blue-ink)">—</div>
+              <div>
+                <div class="profile-main-name" id="mbti-name">—</div>
+                <div class="profile-tagline" id="mbti-tagline">—</div>
+              </div>
+            </div>
+            <p class="profile-body-text" id="mbti-desc"></p>
+            <div class="strengths-wrap" id="mbti-strengths"></div>
+            <div class="shadow-block">
+              <div class="shadow-lbl">Growth Edge</div>
+              <div class="shadow-txt" id="mbti-growth"></div>
+            </div>
+            <div class="partner-block" id="mbti-partner-block">
+              <div class="partner-lbl">Ideal Partner Types</div>
+              <div class="partner-chips-row" id="mbti-chips"></div>
+              <div class="partner-reason-text" id="mbti-partner-reason"></div>
+            </div>
+            <div class="axis-block">
+              <div class="page-title" style="margin-top:14px">Axis Scores</div>
+              <div class="axis-row" id="mbti-axes"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISC -->
+      <div class="page">
+        <button class="accordion-head open" onclick="toggleAcc(this)">
+          <div class="page-title" style="margin-bottom:0;border:none;padding:0">DISC — Behavioural Style</div>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body open" id="disc-body">
+          <div class="profile-block">
+            <div class="profile-header-row">
+              <div class="profile-stamp" id="disc-stamp">—</div>
+              <div>
+                <div class="profile-main-name" id="disc-name">—</div>
+                <div class="profile-tagline" id="disc-tagline">—</div>
+              </div>
+            </div>
+            <p class="profile-body-text" id="disc-desc"></p>
+            <div class="strengths-wrap" id="disc-strengths"></div>
+            <div class="shadow-block">
+              <div class="shadow-lbl">Shadow Side</div>
+              <div class="shadow-txt" id="disc-shadow"></div>
+            </div>
+            <div class="partner-block" id="disc-partner-block">
+              <div class="partner-lbl">Complementary Style</div>
+              <div class="partner-chips-row" id="disc-chips"></div>
+              <div class="partner-reason-text" id="disc-partner-reason"></div>
+            </div>
+            <div class="axis-block">
+              <div class="page-title" style="margin-top:14px">DISC Raw Scores</div>
+              <div id="disc-bars"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Temperament -->
+      <div class="page">
+        <button class="accordion-head open" onclick="toggleAcc(this)">
+          <div class="page-title" style="margin-bottom:0;border:none;padding:0">Four Temperaments — Ancient Framework</div>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body open" id="temp-body">
+          <div class="profile-block">
+            <div class="profile-header-row">
+              <div class="profile-stamp" id="temp-stamp">—</div>
+              <div>
+                <div class="profile-main-name" id="temp-name">—</div>
+                <div class="profile-tagline" id="temp-tagline">—</div>
+              </div>
+            </div>
+            <p class="profile-body-text" id="temp-desc"></p>
+            <div class="strengths-wrap" id="temp-strengths"></div>
+            <div class="shadow-block">
+              <div class="shadow-lbl">Shadow Side</div>
+              <div class="shadow-txt" id="temp-shadow"></div>
+            </div>
+            <div class="partner-block" id="temp-partner-block">
+              <div class="partner-lbl">Ideal Temperament Match</div>
+              <div class="partner-chips-row" id="temp-chips"></div>
+              <div class="partner-reason-text" id="temp-partner-reason"></div>
+            </div>
+            <div class="axis-block">
+              <div class="page-title" style="margin-top:14px">Temperament Scores</div>
+              <div id="temp-bars"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grand Synthesis -->
+      <div class="synthesis-block page">
+        <div class="page-title" style="text-align:center;justify-content:center">Your Ideal Partner — A Synthesis</div>
+        <div class="synth-headline" id="synth-headline"></div>
+        <div class="synth-tiles">
+          <div class="synth-tile">
+            <div class="synth-tile-lbl">Love Language</div>
+            <div class="synth-tile-val" id="synth-love"></div>
+          </div>
+          <div class="synth-tile">
+            <div class="synth-tile-lbl">Relationship Manner</div>
+            <div class="synth-tile-val" id="synth-style"></div>
+          </div>
+        </div>
+        <p class="synth-body" id="synth-body"></p>
+        <div class="red-flag-title">Incompatibility Signals — Heed These</div>
+        <div id="red-flags-list"></div>
+      </div>
+
+      <div style="text-align:center;margin-top:14px;margin-bottom:6px">
+        <button class="btn-ghost" onclick="showPanel('personality');resetQuiz()">↺ Retake the Test</button>
+      </div>
+
+    </div><!-- /personality-results -->
+  </div><!-- /panel-reading -->
+
+  <!-- ═══════════════════════════════════════
+       IV. GRATITUDE JOURNAL
+  ════════════════════════════════════════ -->
+  <div class="panel" id="panel-journal">
+    <div class="page">
+      <div class="page-title">The Gratitude Journal</div>
+      <p class="journal-intro">
+        A daily practice rooted in centuries of wisdom: write down three things — however small, however ordinary — that you are grateful for today. Research consistently shows this simple act reshapes the brain's attention toward abundance over scarcity.
+      </p>
+      <div class="gratitude-prompt">What three things are you grateful for today?</div>
+      <div class="gratitude-field-wrap">
+        <div class="gratitude-field-row">
+          <span class="field-number">I.</span>
+          <input type="text" class="gratitude-input" id="g1" placeholder="Something that brought me warmth today…"/>
+        </div>
+        <div class="gratitude-field-row">
+          <span class="field-number">II.</span>
+          <input type="text" class="gratitude-input" id="g2" placeholder="A person, moment, or small thing…"/>
+        </div>
+        <div class="gratitude-field-row">
+          <span class="field-number">III.</span>
+          <input type="text" class="gratitude-input" id="g3" placeholder="Something I often overlook…"/>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-stamp" onclick="saveGratitude()">✦ &nbsp; Record in the Journal</button>
+      </div>
+      <div class="loader" id="j-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="page journal-saved-entries" id="journal-saved" style="display:none">
+      <div class="page-title">Previous Entries</div>
+      <div id="journal-entries-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       V. MOON PHASE
+  ════════════════════════════════════════ -->
+  <div class="panel" id="panel-moon">
+    <div class="page">
+      <div class="page-title">The Lunar Almanac</div>
+      <div class="moon-display">
+        <span class="moon-big-emoji" id="moon-big-emoji">🌙</span>
+        <div class="moon-phase-title" id="moon-title">Loading…</div>
+        <p class="moon-phase-desc" id="moon-desc"></p>
+        <div class="moon-illumination-row">
+          <span class="moon-illum-label">Illumination</span>
+          <div class="moon-illum-track"><div class="moon-illum-fill" id="moon-illum" style="width:0%"></div></div>
+          <span class="moon-illum-pct" id="moon-illum-pct">—</span>
+        </div>
+      </div>
+      <p class="moon-wellness-note" id="moon-wellness-note">
+        The moon has guided human rhythms for thousands of years — planting, harvesting, resting, acting. Whether you believe in its influence or simply find it beautiful, pausing to notice it is an act of attention. And attention is care.
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       VI. COLOUR THERAPY
+  ════════════════════════════════════════ -->
+  <div class="panel" id="panel-colortherapy">
+    <div class="page">
+      <div class="page-title">Colour Therapy — The Psychology of Hue</div>
+      <p class="journal-intro">
+        For thousands of years, healers and philosophers have observed that colour affects mood, energy, and perception. Modern chromotherapy research confirms what the ancients intuited: the colours we surround ourselves with matter more than we realise.
+      </p>
+      <div class="color-therapy-grid" id="ct-grid"></div>
+    </div>
+  </div>
+
+  <footer>
+    Lumina &mdash; A Wellness & Soul Journal &mdash; Not a substitute for professional care
+  </footer>
+
+</div><!-- /journal -->
+
+<div class="toast" id="toast">Noted.</div>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════ -->
+<script>
+
+// ── TODAY'S DATE ──────────────────────────────────────────────────────
+document.getElementById('today-date').textContent =
+  new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+// ── PANEL SWITCHING ───────────────────────────────────────────────────
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelector(`[data-panel="${name}"]`).classList.add('active');
+}
+
+// ── ACCORDION ─────────────────────────────────────────────────────────
+function toggleAcc(btn) {
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+
+// ── SLIDERS ───────────────────────────────────────────────────────────
+const SLIDERS = {
+  sleep:'v-sleep', stress:'v-stress', energy:'v-energy',
+  mood:'v-mood', activity:'v-activity', social:'v-social', hydration:'v-hydration'
+};
+Object.keys(SLIDERS).forEach(id => {
+  const el = document.getElementById('sl-' + id);
+  const vl = document.getElementById(SLIDERS[id]);
+  const upd = () => {
+    const v = parseFloat(el.value);
+    vl.textContent = (v % 1 === 0 ? v : v.toFixed(1));
+    el.style.setProperty('--p', (v / 10 * 100) + '%');
+  };
+  el.addEventListener('input', upd);
+  upd();
+});
+
+// ── COLOUR APPLY ──────────────────────────────────────────────────────
+function applyResultColor(inkColor) {
+  document.documentElement.style.setProperty('--result-ink', inkColor);
+}
+
+// ── WELLNESS CALCULATION ──────────────────────────────────────────────
+async function calcWellness() {
+  const btn = document.getElementById('w-btn');
+  const loader = document.getElementById('w-loader');
+  btn.style.display = 'none';
+  loader.classList.add('on');
+
+  const data = {};
+  Object.keys(SLIDERS).forEach(k => {
+    data[k] = parseFloat(document.getElementById('sl-' + k).value);
+  });
+
+  const res = await fetch('/wellness', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const r = await res.json();
+  renderWellness(r);
+
+  loader.classList.remove('on');
+  btn.style.display = 'inline-flex';
+}
+
+function renderWellness(r) {
+  applyResultColor(r.ink);
+
+  document.getElementById('r-symbol').textContent = r.symbol;
+  document.getElementById('r-symbol').style.color = r.ink;
+  document.getElementById('r-mood').textContent = r.mood;
+  document.getElementById('r-mood').style.color = r.ink;
+  document.getElementById('r-desc').textContent = r.desc;
+
+  // Thermometer
+  setTimeout(() => {
+    document.getElementById('thermo-fill').style.height = r.score + '%';
+    document.getElementById('thermo-fill').style.background = r.ink;
+  }, 80);
+
+  // Score counter
+  animCount('score-big', 0, r.score, 1100);
+  document.getElementById('score-big').style.color = r.ink;
+
+  // Palette seals
+  const row = document.getElementById('palette-row');
+  row.innerHTML = '';
+  r.palette.forEach(hex => {
+    const s = document.createElement('div');
+    s.className = 'seal';
+    s.innerHTML = `<div class="seal-circle" style="background:${hex}"></div><span class="seal-hex">${hex}</span>`;
+    s.onclick = () => copyText(hex);
+    row.appendChild(s);
+  });
+
+  // Notecards
+  document.getElementById('r-tip').textContent = r.tip;
+  document.getElementById('r-activity').textContent = r.activity;
+  document.getElementById('r-element').textContent = `Your element today is ${r.element}. ${elementDesc(r.element)}`;
+  document.getElementById('r-colour').textContent = r.color_therapy;
+  document.getElementById('r-affirmation').textContent = r.affirmation;
+  document.getElementById('r-affirmation').style.color = r.ink;
+
+  // Notecard top borders
+  document.querySelectorAll('.notecard::before').forEach(el => {
+    el.style.background = r.ink;
+  });
+
+  // Breakdown ledger
+  const bd = document.getElementById('breakdown-rows');
+  bd.innerHTML = '';
+  Object.entries(r.breakdown).forEach(([k, v]) => {
+    const pct = (v / 10 * 100).toFixed(0);
+    bd.innerHTML += `<div class="ledger-row">
+      <div class="ledger-key">${k}</div>
+      <div class="ledger-track"><div class="ledger-fill" data-pct="${pct}"></div></div>
+      <div class="ledger-val" style="color:${r.ink}">${v}</div>
+    </div>`;
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.ledger-fill').forEach(b => {
+      b.style.width = b.dataset.pct + '%';
+      b.style.background = r.ink;
+    });
+  }, 150);
+
+  // Breathing
+  breathCfg = r.breath;
+  document.getElementById('breath-name-lbl').textContent = r.breath.name;
+  document.getElementById('breath-ring').style.borderColor = r.ink;
+
+  // History
+  if (r.history && r.history.length > 0) {
+    document.getElementById('history-page').style.display = 'block';
+    const list = document.getElementById('history-list');
+    list.innerHTML = '';
+    r.history.forEach(h => {
+      list.innerHTML += `<div class="history-entry">
+        <span class="h-glyph" style="color:${h.ink}">${h.symbol}</span>
+        <div class="h-info">
+          <div class="h-mood-name" style="color:${h.ink}">${h.mood}</div>
+          <div class="h-time">${h.ts}</div>
+        </div>
+        <div class="h-score-val">${h.score}</div>
+      </div>`;
+    });
+  }
+
+  const wr = document.getElementById('wellness-results');
+  wr.classList.add('show');
+  setTimeout(() => wr.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function elementDesc(el) {
+  const d = {
+    Fire: 'Move, act, channel your energy outward.',
+    Water: 'Flow gently. Rest. Let things find their level.',
+    Earth: 'Stay close to the ground. Small, solid steps.',
+    Air:   'Let your thoughts breathe. Lightness is wisdom.',
+    Ether: 'Turn inward. The answers you need are already here.'
+  };
+  return d[el] || '';
+}
+
+// ── BREATHING ─────────────────────────────────────────────────────────
+let breathCfg = { name: '4-4-4', in: 4, hold: 4, out: 4 };
+let breathTimer = null;
+let breathOn = false;
+
+function toggleBreath() {
+  if (breathOn) {
+    clearTimeout(breathTimer);
+    breathOn = false;
+    document.getElementById('breath-btn').textContent = '▷ Start';
+    document.getElementById('breath-ring').textContent = 'Begin';
+    document.getElementById('breath-ring').className = 'breath-circle';
+    document.getElementById('breath-phase').textContent = '';
+  } else {
+    breathOn = true;
+    document.getElementById('breath-btn').textContent = '□ Stop';
+    runBreath();
+  }
+}
+
+function runBreath() {
+  if (!breathOn) return;
+  const ring = document.getElementById('breath-ring');
+  const ph   = document.getElementById('breath-phase');
+  ring.className = 'breath-circle inhale';
+  ring.textContent = 'Breathe in';
+  ph.textContent = `Inhale — ${breathCfg.in}s`;
+  breathTimer = setTimeout(() => {
+    if (!breathOn) return;
+    if (breathCfg.hold > 0) {
+      ring.textContent = 'Hold';
+      ph.textContent = `Hold — ${breathCfg.hold}s`;
+      breathTimer = setTimeout(() => { if (breathOn) exhale(ring, ph); }, breathCfg.hold * 1000);
+    } else { exhale(ring, ph); }
+  }, breathCfg.in * 1000);
+}
+
+function exhale(ring, ph) {
+  ring.className = 'breath-circle exhale';
+  ring.textContent = 'Breathe out';
+  ph.textContent = `Exhale — ${breathCfg.out}s`;
+  breathTimer = setTimeout(() => { if (breathOn) runBreath(); }, breathCfg.out * 1000);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PERSONALITY QUIZ
+// ══════════════════════════════════════════════════════════════════
+
+const QUESTIONS = [
+  { section:"Energy & Social World", text:"At a gathering of people, you naturally tend to…",
+    opts:[
+      {l:"A",t:"Jump into conversations, meet everyone, and keep the energy alive.",s:{E:3,F:1,P:1,Ii:3,San:3}},
+      {l:"B",t:"Move the room toward outcomes — you network with purpose.",s:{E:2,T:1,J:2,Di:3,Cho:3}},
+      {l:"C",t:"Find one or two people you trust and have a real conversation.",s:{I_mbti:2,F:2,Si:3,Phl:3}},
+      {l:"D",t:"Observe quietly, read the room, and engage only when it feels right.",s:{I_mbti:3,N:1,Ci:3,Mel:3}}
+    ]},
+  { section:"Energy & Social World", text:"After a long, draining week, you genuinely recharge by…",
+    opts:[
+      {l:"A",t:"Calling friends or going out — social energy is what restores you.",s:{E:3,San:2,Ii:2,P:1}},
+      {l:"B",t:"Jumping into a project or physical challenge — action resets you.",s:{E:2,Cho:3,Di:2,J:1}},
+      {l:"C",t:"Complete solitude — books, music, silence.",s:{I_mbti:3,Mel:2,N:1,Ci:1}},
+      {l:"D",t:"A quiet evening with close people or a very long, uninterrupted sleep.",s:{I_mbti:2,Phl:3,Si:2,F:2}}
+    ]},
+  { section:"How You Think", text:"When making an important decision, you rely most on…",
+    opts:[
+      {l:"A",t:"Objective logic and systematic analysis of the available facts.",s:{T:3,Mel:1,Ci:2}},
+      {l:"B",t:"Your gut instinct and past pattern recognition.",s:{N:2,Cho:2,Di:2,P:1}},
+      {l:"C",t:"How the decision will affect the people involved.",s:{F:3,Phl:2,Si:2}},
+      {l:"D",t:"Thorough research and evidence gathered before committing.",s:{T:2,S_mbti:1,Mel:3,Ci:3,J:1}}
+    ]},
+  { section:"How You Think", text:"In a conflict, your first instinct is to…",
+    opts:[
+      {l:"A",t:"Assert your position — you know what is right and you stand by it.",s:{Di:3,Cho:3,T:2,E:1}},
+      {l:"B",t:"Restore harmony — everyone's feelings carry weight here.",s:{F:3,Phl:3,Si:3,I_mbti:1}},
+      {l:"C",t:"Analyse the root cause before saying a single word.",s:{T:2,N:1,Mel:3,Ci:2,I_mbti:1}},
+      {l:"D",t:"Lighten the atmosphere and redirect toward something positive.",s:{San:3,Ii:3,F:1,P:2,E:2}}
+    ]},
+  { section:"How You Think", text:"Your personal space is best described as…",
+    opts:[
+      {l:"A",t:"Methodically organised — everything has a precise place.",s:{J:3,Mel:2,Ci:2,S_mbti:1}},
+      {l:"B",t:"Organised chaos — messy to others, but you always know where things are.",s:{P:3,San:2,Di:1}},
+      {l:"C",t:"Minimal and purposeful — distractions have been deliberately removed.",s:{J:2,Cho:2,Di:1,T:1}},
+      {l:"D",t:"Cosy and personal — full of objects that carry meaning.",s:{F:2,Phl:3,Si:2}}
+    ]},
+  { section:"How You Think", text:"When learning something new, your preferred approach is…",
+    opts:[
+      {l:"A",t:"Dive straight in — you learn fastest by doing and making mistakes.",s:{S_mbti:2,P:2,San:2,Di:2}},
+      {l:"B",t:"Read deeply and understand the theory before touching it.",s:{N:3,I_mbti:2,Mel:3,Ci:2}},
+      {l:"C",t:"Follow a clear, step-by-step guide.",s:{S_mbti:3,J:2,Phl:2,Si:2}},
+      {l:"D",t:"Watch an expert, absorb the pattern, then find your own way.",s:{N:2,Cho:2,Di:2,I_mbti:1}}
+    ]},
+  { section:"How You Decide", text:"In a team, the role you most naturally assume is…",
+    opts:[
+      {l:"A",t:"The Leader — you set the direction and drive everything toward results.",s:{Di:3,Cho:3,E:2,J:2,T:1}},
+      {l:"B",t:"The Motivator — you keep spirits high and everyone genuinely engaged.",s:{Ii:3,San:3,E:2,F:2}},
+      {l:"C",t:"The Anchor — reliable and consistent, making sure nothing falls through.",s:{Si:3,Phl:3,J:2,F:1}},
+      {l:"D",t:"The Analyst — you identify the real problem and find the best solution.",s:{Ci:3,Mel:3,T:3,I_mbti:1}}
+    ]},
+  { section:"How You Decide", text:"Your deepest, most honest fear is…",
+    opts:[
+      {l:"A",t:"Losing control or being perceived as incompetent.",s:{Di:2,Cho:2,T:1,J:1}},
+      {l:"B",t:"Being rejected, excluded, or genuinely disliked.",s:{San:3,Ii:3,F:2,E:1}},
+      {l:"C",t:"Instability, conflict, and sudden, unwanted change.",s:{Phl:3,Si:3,J:2,I_mbti:1}},
+      {l:"D",t:"Being wrong, or making an error with real consequences.",s:{Mel:3,Ci:3,T:2,I_mbti:1}}
+    ]},
+  { section:"How You Decide", text:"When someone comes to you with a serious problem, you…",
+    opts:[
+      {l:"A",t:"Immediately switch to solution mode — you offer a clear action plan.",s:{Di:3,Cho:3,T:3}},
+      {l:"B",t:"Listen fully, empathise, and offer emotional support first.",s:{Phl:3,Si:2,F:3}},
+      {l:"C",t:"Try to lift their spirits with warmth and positive reframing.",s:{San:3,Ii:3,F:2,E:1}},
+      {l:"D",t:"Sit with it carefully, then deliver deeply considered advice.",s:{Mel:3,Ci:3,T:2}}
+    ]},
+  { section:"How You Decide", text:"When a plan changes unexpectedly at the last minute, you…",
+    opts:[
+      {l:"A",t:"Adapt quickly — you honestly enjoy the spontaneity.",s:{P:3,San:2,Ii:2,N:1}},
+      {l:"B",t:"Feel genuinely frustrated — you had a strategy for a reason.",s:{J:3,Cho:2,Di:2,T:1}},
+      {l:"C",t:"Assess the new situation carefully before committing.",s:{J:2,Mel:3,Ci:2,T:1}},
+      {l:"D",t:"Go with the flow — change very rarely unsettles you.",s:{P:2,Phl:3,Si:2,F:1}}
+    ]},
+  { section:"Your Life & Drive", text:"Your natural communication style is best described as…",
+    opts:[
+      {l:"A",t:"Direct and confident — you say exactly what you mean.",s:{Di:3,Cho:3,T:2,E:1}},
+      {l:"B",t:"Warm and expressive — storytelling and enthusiasm come naturally.",s:{San:3,Ii:3,F:2,E:2}},
+      {l:"C",t:"Careful and precise — you choose every word with deliberate thought.",s:{Mel:3,Ci:3,T:2,I_mbti:1}},
+      {l:"D",t:"Gentle and diplomatic — you soften hard truths so they land with care.",s:{Phl:3,Si:2,F:3}}
+    ]},
+  { section:"Your Life & Drive", text:"You are most genuinely energised by…",
+    opts:[
+      {l:"A",t:"Achieving ambitious goals, winning, and making visible progress.",s:{Di:3,Cho:3,T:2,J:1}},
+      {l:"B",t:"Making people genuinely happy and having memorable experiences.",s:{San:3,Ii:3,F:2,E:1}},
+      {l:"C",t:"Being the person others can always count on.",s:{Phl:3,Si:3,F:3}},
+      {l:"D",t:"Solving genuinely complex problems and gaining deep mastery.",s:{Mel:3,Ci:3,T:2,N:2,I_mbti:1}}
+    ]},
+  { section:"Your Life & Drive", text:"Which statement resonates most deeply with you?",
+    opts:[
+      {l:"A",t:"\"I lead by example and hold myself and others to the highest standard.\"",s:{Di:3,Cho:3,J:2,T:2}},
+      {l:"B",t:"\"I want to inspire people and make life feel alive and worth living.\"",s:{Ii:3,San:3,E:3,F:1}},
+      {l:"C",t:"\"I am the person who keeps the peace and supports everyone around me.\"",s:{Si:3,Phl:3,F:3,J:1}},
+      {l:"D",t:"\"I refine, perfect, and elevate the quality of everything I touch.\"",s:{Ci:3,Mel:3,T:3,I_mbti:2}}
+    ]},
+  { section:"Your Life & Drive", text:"How do you handle stress?",
+    opts:[
+      {l:"A",t:"Take immediate action — movement and decisiveness restore your sense of power.",s:{Di:3,Cho:3,E:1,T:1}},
+      {l:"B",t:"Talk to someone — expressing it out loud releases the pressure.",s:{San:3,Ii:2,E:2,F:2}},
+      {l:"C",t:"Withdraw inward and process quietly until you find clarity.",s:{Mel:2,Phl:2,I_mbti:3,Ci:2}},
+      {l:"D",t:"Stay calm, carry on, and avoid escalating the situation.",s:{Phl:3,Si:3,I_mbti:1}}
+    ]},
+  { section:"Your Life & Drive", text:"Your relationship with time is best described as…",
+    opts:[
+      {l:"A",t:"Time is a resource — you schedule, protect, and optimise it.",s:{J:3,Cho:2,Di:2,T:1}},
+      {l:"B",t:"Time is social — it belongs to the people who matter.",s:{Phl:3,Si:3,F:2,P:1}},
+      {l:"C",t:"Time dissolves when you are deep in thought or creative flow.",s:{Mel:3,N:3,I_mbti:2,P:1}},
+      {l:"D",t:"Time is flexible — you adapt and flow with how the day unfolds.",s:{P:3,San:2,Phl:1}}
+    ]},
+  { section:"Love & Relationships", text:"In a relationship, you most naturally become…",
+    opts:[
+      {l:"A",t:"The protector and provider — you take initiative and lead.",s:{Cho:3,Di:3,J:2,T:1}},
+      {l:"B",t:"The adventure partner — spontaneous, warm, and fun every day.",s:{San:3,Ii:3,P:3,E:2}},
+      {l:"C",t:"The devoted constant — steadily present, loyal through everything.",s:{Phl:3,Si:3,J:2,F:2}},
+      {l:"D",t:"The depth-seeker — craving real conversation and soul-level connection.",s:{Mel:2,N:3,I_mbti:2,F:1}}
+    ]},
+  { section:"Love & Relationships", text:"You express love most naturally through…",
+    opts:[
+      {l:"A",t:"Acts of service — doing what needs doing without being asked.",s:{Phl:3,Si:2,F:2,J:1}},
+      {l:"B",t:"Words — you express your love openly, enthusiastically, and often.",s:{San:3,Ii:3,E:2,F:2}},
+      {l:"C",t:"Quality time and deep conversation — your presence is your gift.",s:{Mel:3,N:2,I_mbti:2,F:2}},
+      {l:"D",t:"Protecting, providing, and taking decisive action on behalf of your partner.",s:{Cho:3,Di:3,T:1,J:1}}
+    ]},
+  { section:"Love & Relationships", text:"What you need most from a romantic partner is…",
+    opts:[
+      {l:"A",t:"Someone who matches your ambition and respects your independence.",s:{Cho:2,Di:2,T:2,J:1}},
+      {l:"B",t:"Someone spontaneous, warm, and emotionally expressive.",s:{San:2,Ii:2,F:2,P:2,E:1}},
+      {l:"C",t:"Someone loyal, calm, and deeply emotionally stable.",s:{Phl:3,Si:3,J:2,F:2}},
+      {l:"D",t:"Someone intellectual, curious, and interested in depth over breadth.",s:{Mel:3,N:3,I_mbti:2}}
+    ]},
+  { section:"Love & Relationships", text:"In a new city alone with no map, no phone, no plan, you would…",
+    opts:[
+      {l:"A",t:"Pick a direction and walk until something interesting happens.",s:{P:3,San:3,N:2,E:1}},
+      {l:"B",t:"Find a café, sit down, and observe — absorbing the world slowly.",s:{N:3,Mel:3,I_mbti:2}},
+      {l:"C",t:"Ask locals for recommendations — human connection is the adventure.",s:{Phl:2,Si:2,F:1,S_mbti:2,E:1}},
+      {l:"D",t:"Mentally map the key areas and work through them efficiently.",s:{J:3,Cho:2,S_mbti:1,T:1}}
+    ]},
+  { section:"Love & Relationships", text:"Your life philosophy comes closest to…",
+    opts:[
+      {l:"A",t:"\"Make things happen. Don't wait for the world to give you permission.\"",s:{Di:3,Cho:3,J:2,T:2,E:1}},
+      {l:"B",t:"\"Life is too short not to savour every single moment of it.\"",s:{San:3,Ii:3,P:3,F:2,E:1}},
+      {l:"C",t:"\"Depth over breadth. Quality in all things — especially people.\"",s:{Mel:3,Ci:2,I_mbti:3,T:2,N:2}},
+      {l:"D",t:"\"People are everything. Take care of them and everything else follows.\"",s:{Phl:3,Si:3,F:3,J:1}}
+    ]}
+];
+
+// Quiz state
+let qIdx = 0;
+let answers = new Array(20).fill(null);
+let scores = { E:0,I_mbti:0,S_mbti:0,N:0,T:0,F:0,J:0,P:0, Di:0,Ii:0,Si:0,Ci:0, Cho:0,San:0,Phl:0,Mel:0 };
+
+function startQuiz() {
+  document.getElementById('quiz-intro').style.display = 'none';
+  document.getElementById('quiz-active').style.display = 'block';
+  renderQ(0);
+}
+
+function resetQuiz() {
+  qIdx = 0;
+  answers = new Array(20).fill(null);
+  scores = { E:0,I_mbti:0,S_mbti:0,N:0,T:0,F:0,J:0,P:0, Di:0,Ii:0,Si:0,Ci:0, Cho:0,San:0,Phl:0,Mel:0 };
+  document.getElementById('quiz-intro').style.display = 'block';
+  document.getElementById('quiz-active').style.display = 'none';
+  document.getElementById('quiz-done').style.display = 'none';
+}
+
+function renderQ(idx) {
+  const q = QUESTIONS[idx];
+  const area = document.getElementById('question-area');
+
+  const existing = area.querySelector('.active');
+  if (existing) {
+    existing.classList.remove('active');
+    existing.classList.add('exit');
+    setTimeout(() => existing.remove(), 320);
+  }
+
+  const slide = document.createElement('div');
+  slide.className = 'q-slide';
+  slide.innerHTML = `
+    <div class="q-section-tag">${q.section}</div>
+    <div class="q-number">Q.${idx + 1} of 20</div>
+    <div class="q-text">${q.text}</div>
+    <div class="options-col">
+      ${q.opts.map((o, i) => `
+        <button class="opt ${answers[idx] === i ? 'chosen' : ''}" onclick="selectOpt(${idx},${i},this)">
+          <span class="opt-key">${o.l}.</span>
+          <span class="opt-txt">${o.t}</span>
+        </button>`).join('')}
+    </div>`;
+
+  area.appendChild(slide);
+  requestAnimationFrame(() => requestAnimationFrame(() => slide.classList.add('active')));
+
+  const pct = ((idx + 1) / 20 * 100).toFixed(0);
+  document.getElementById('q-prog').style.width = pct + '%';
+  document.getElementById('q-counter').textContent = `Question ${idx + 1} of 20`;
+  document.getElementById('q-answered').textContent = answers.filter(a => a !== null).length + ' answered';
+  document.getElementById('q-section-lbl').textContent = q.section;
+  document.getElementById('q-back').style.display = idx > 0 ? 'inline-flex' : 'none';
+}
+
+function selectOpt(qIdx, optIdx, btn) {
+  btn.closest('.options-col').querySelectorAll('.opt').forEach(b => b.classList.remove('chosen'));
+  btn.classList.add('chosen');
+
+  if (answers[qIdx] !== null) {
+    const old = QUESTIONS[qIdx].opts[answers[qIdx]].s;
+    Object.entries(old).forEach(([k, v]) => { scores[k] = (scores[k] || 0) - v; });
+  }
+  answers[qIdx] = optIdx;
+  const ns = QUESTIONS[qIdx].opts[optIdx].s;
+  Object.entries(ns).forEach(([k, v]) => { scores[k] = (scores[k] || 0) + v; });
+
+  setTimeout(() => {
+    if (qIdx < 19) { window.qIdx = qIdx + 1; renderQ(window.qIdx); }
+    else { finishQuiz(); }
+  }, 400);
+}
+
+function prevQ() {
+  if (window.qIdx > 0) { window.qIdx--; renderQ(window.qIdx); }
+}
+
+async function finishQuiz() {
+  document.getElementById('quiz-active').style.display = 'none';
+  document.getElementById('quiz-done').style.display = 'block';
+  setTimeout(async () => {
+    const res = await fetch('/personality', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(scores)
+    });
+    const r = await res.json();
+    renderPersonality(r);
+    showPanel('reading');
+    document.getElementById('quiz-done').style.display = 'none';
+  }, 1400);
+}
+
+// ── RENDER PERSONALITY RESULTS ────────────────────────────────────────
+function renderPersonality(r) {
+  document.getElementById('reading-empty').style.display = 'none';
+  const pr = document.getElementById('personality-results');
+  pr.classList.add('show');
+
+  const typeColors = {
+    NT:'#1E3A5F', NF:'#2E5B3A', SJ:'#4A2B6B', SP:'#6B3010'
+  };
+  const discColors = { D:'#8B3A35', I:'#8B6A1A', S:'#2E5B3A', C:'#1E3A5F' };
+  const tempColors = { Choleric:'#8B3A35', Sanguine:'#8B6A1A', Phlegmatic:'#2C5A7A', Melancholic:'#4A3A6B' };
+
+  const mc = typeColors[r.mbti.group] || '#6B4820';
+  const dc = discColors[r.disc.style] || '#6B4820';
+  const tc = tempColors[r.temperament.type] || '#6B4820';
+
+  // Trinity
+  const trinity = document.getElementById('trinity-row');
+  trinity.innerHTML = `
+    <div class="trinity-tile" style="--tc:${mc}">
+      <div class="tt-system">MBTI Type</div>
+      <div class="tt-type">${r.mbti.type}</div>
+      <div class="tt-name">${r.mbti.name}</div>
+    </div>
+    <div class="trinity-tile" style="--tc:${dc}">
+      <div class="tt-system">DISC Style</div>
+      <div class="tt-type">${r.disc.style}</div>
+      <div class="tt-name">${r.disc.name}</div>
+    </div>
+    <div class="trinity-tile" style="--tc:${tc}">
+      <div class="tt-system">Temperament</div>
+      <div class="tt-type">${r.temperament.symbol || '◆'}</div>
+      <div class="tt-name">${r.temperament.type}</div>
+    </div>`;
+
+  // Helper: render a profile section
+  function fillProfile(prefix, data, color, typeCode, chips, chipReason) {
+    document.getElementById(prefix + '-stamp').textContent = typeCode;
+    document.getElementById(prefix + '-stamp').style.setProperty('--tc', color);
+    document.getElementById(prefix + '-stamp').style.borderColor = color;
+    document.getElementById(prefix + '-stamp').style.color = color;
+    document.getElementById(prefix + '-name').textContent = data.name || (data.type + ' — ' + data.label);
+    document.getElementById(prefix + '-tagline').textContent = data.tagline;
+    document.getElementById(prefix + '-desc').textContent = data.desc;
+    document.getElementById(prefix + '-strengths').innerHTML =
+      data.strengths.map(s => `<span class="strength-chip">${s}</span>`).join('');
+    document.getElementById(prefix + '-shadow') && (document.getElementById(prefix + '-shadow').textContent = data.shadow || data.growth || '');
+    document.getElementById(prefix + '-chips').innerHTML =
+      chips.map(c => `<span class="partner-chip" style="border-color:${color};color:${color}">${c}</span>`).join('');
+    document.getElementById(prefix + '-partner-reason').textContent = chipReason;
+    document.getElementById(prefix + '-partner-block').style.setProperty('--tc', color);
+  }
+
+  // MBTI
+  fillProfile('mbti',
+    { name: `${r.mbti.type} — ${r.mbti.name}`, tagline: r.mbti.tagline, desc: r.mbti.desc, strengths: r.mbti.strengths },
+    mc, r.mbti.type, r.mbti.partner_types, r.mbti.partner_reason
+  );
+  document.getElementById('mbti-growth').textContent = r.mbti.growth;
+
+  // MBTI axes
+  const ms = r.raw_scores.mbti;
+  const axPairs = [['E','I','E / I'],['N','S','N / S'],['T','F','T / F'],['J','P','J / P']];
+  document.getElementById('mbti-axes').innerHTML = axPairs.map(([lk, rk, lbl]) => {
+    const lv = ms[lk]||0, rv = ms[rk]||0, tot = lv+rv||1;
+    const lp = (lv/tot*100).toFixed(0);
+    const winner = lv >= rv ? lk : rk;
+    return `<div class="ax-item">
+      <div class="ax-header">
+        <span class="ax-name">${lbl}</span>
+        <span class="ax-val" style="color:${mc}">${winner} ${lv>=rv?lp:(rv/tot*100).toFixed(0)}%</span>
+      </div>
+      <div class="ax-track"><div class="ax-fill" data-w="${lp}" style="background:${mc}"></div></div>
+    </div>`;
+  }).join('');
+
+  // DISC
+  document.getElementById('disc-stamp').textContent = r.disc.style;
+  document.getElementById('disc-stamp').style.setProperty('--tc', dc);
+  document.getElementById('disc-stamp').style.borderColor = dc;
+  document.getElementById('disc-stamp').style.color = dc;
+  document.getElementById('disc-name').textContent = `${r.disc.style} — ${r.disc.label}`;
+  document.getElementById('disc-tagline').textContent = r.disc.tagline;
+  document.getElementById('disc-desc').textContent = r.disc.desc;
+  document.getElementById('disc-strengths').innerHTML = r.disc.strengths.map(s=>`<span class="strength-chip">${s}</span>`).join('');
+  document.getElementById('disc-shadow').textContent = r.disc.shadow;
+  document.getElementById('disc-chips').innerHTML = `<span class="partner-chip" style="border-color:${dc};color:${dc}">${r.disc.partner_name}</span>`;
+  document.getElementById('disc-partner-reason').textContent = r.disc.partner_reason;
+  document.getElementById('disc-partner-block').style.setProperty('--tc', dc);
+
+  const maxD = Math.max(...Object.values(r.raw_scores.disc)) || 1;
+  document.getElementById('disc-bars').innerHTML = Object.entries(r.raw_scores.disc).map(([k,v]) => {
+    const pct = (v/maxD*100).toFixed(0);
+    return `<div class="ledger-row">
+      <div class="ledger-key">${k}</div>
+      <div class="ledger-track"><div class="ledger-fill" data-pct="${pct}" style="background:${discColors[k]}"></div></div>
+      <div class="ledger-val" style="color:${discColors[k]}">${v}</div>
+    </div>`;
+  }).join('');
+
+  // Temperament
+  document.getElementById('temp-stamp').textContent = r.temperament.symbol || '◆';
+  document.getElementById('temp-stamp').style.setProperty('--tc', tc);
+  document.getElementById('temp-stamp').style.borderColor = tc;
+  document.getElementById('temp-stamp').style.color = tc;
+  document.getElementById('temp-name').textContent = r.temperament.type;
+  document.getElementById('temp-tagline').textContent = r.temperament.tagline;
+  document.getElementById('temp-desc').textContent = r.temperament.desc;
+  document.getElementById('temp-strengths').innerHTML = r.temperament.strengths.map(s=>`<span class="strength-chip">${s}</span>`).join('');
+  document.getElementById('temp-shadow').textContent = r.temperament.shadow;
+  document.getElementById('temp-chips').innerHTML = `<span class="partner-chip" style="border-color:${tc};color:${tc}">${r.temperament.partner_temp}</span>`;
+  document.getElementById('temp-partner-reason').textContent = r.temperament.partner_reason;
+  document.getElementById('temp-partner-block').style.setProperty('--tc', tc);
+
+  const maxT = Math.max(...Object.values(r.raw_scores.temp)) || 1;
+  document.getElementById('temp-bars').innerHTML = Object.entries(r.raw_scores.temp).map(([k,v]) => {
+    const pct = (v/maxT*100).toFixed(0);
+    return `<div class="ledger-row">
+      <div class="ledger-key">${k}</div>
+      <div class="ledger-track"><div class="ledger-fill" data-pct="${pct}" style="background:${tempColors[k]}"></div></div>
+      <div class="ledger-val" style="color:${tempColors[k]}">${v}</div>
+    </div>`;
+  }).join('');
+
+  // Synthesis
+  const syn = r.synthesis;
+  document.getElementById('synth-headline').textContent = syn.headline;
+  document.getElementById('synth-love').textContent = syn.love_language;
+  document.getElementById('synth-style').textContent = `You are a ${syn.relationship_style} partner.`;
+  document.getElementById('synth-body').textContent = `${syn.intro} ${syn.partner_desc}`;
+  document.getElementById('red-flags-list').innerHTML =
+    syn.red_flags.map(f=>`<div class="red-flag-item"><span class="rf-mark">†</span><span class="rf-text">${f}</span></div>`).join('');
+
+  // Animate all bar fills
+  setTimeout(() => {
+    document.querySelectorAll('.ledger-fill[data-pct]').forEach(b => b.style.width = b.dataset.pct + '%');
+    document.querySelectorAll('.ax-fill[data-w]').forEach(b => b.style.width = b.dataset.w + '%');
+  }, 200);
+}
+
+// ── GRATITUDE JOURNAL ─────────────────────────────────────────────────
+async function saveGratitude() {
+  const loader = document.getElementById('j-loader');
+  loader.classList.add('on');
+
+  const entries = [
+    document.getElementById('g1').value,
+    document.getElementById('g2').value,
+    document.getElementById('g3').value
+  ];
+
+  const res = await fetch('/gratitude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ entries })
+  });
+  const r = await res.json();
+  loader.classList.remove('on');
+
+  if (r.saved) {
+    // Clear inputs
+    ['g1','g2','g3'].forEach(id => document.getElementById(id).value = '');
+    toast('Recorded in your journal ✦');
+    loadJournal();
+  }
+}
+
+async function loadJournal() {
+  const res = await fetch('/journal');
+  const records = await res.json();
+  if (!records.length) return;
+
+  document.getElementById('journal-saved').style.display = 'block';
+  const list = document.getElementById('journal-entries-list');
+  list.innerHTML = '';
+
+  records.forEach(rec => {
+    const entriesHtml = rec.entries.map(e =>
+      `<div class="jr-entry"><span class="jr-bullet">✦</span>${e}</div>`
+    ).join('');
+    list.innerHTML += `<div class="journal-record">
+      <div class="journal-record-header">
+        <span class="jr-date">${rec.date}</span>
+        <span class="jr-time">${rec.time}</span>
+      </div>
+      <div class="journal-record-entries">${entriesHtml}</div>
+    </div>`;
+  });
+}
+
+// ── MOON PHASE ─────────────────────────────────────────────────────────
+async function loadMoon() {
+  const res = await fetch('/moon');
+  const m = await res.json();
+
+  // Corner
+  document.getElementById('corner-moon-emoji').textContent = m.emoji;
+  document.getElementById('corner-moon-phase').textContent = m.phase;
+
+  // Full panel
+  document.getElementById('moon-big-emoji').textContent = m.emoji;
+  document.getElementById('moon-title').textContent = m.phase;
+  document.getElementById('moon-desc').textContent = m.description;
+  document.getElementById('moon-illum-pct').textContent = m.illumination + '%';
+  setTimeout(() => {
+    document.getElementById('moon-illum').style.width = m.illumination + '%';
+  }, 300);
+}
+
+// ── COLOUR THERAPY ─────────────────────────────────────────────────────
+const COLOR_THERAPY = [
+  { title:'Warm Spectrum', swatch:'linear-gradient(135deg,#C8703A,#E8A050,#D4924A)',
+    meaning:'Reds, oranges, and golds stimulate the nervous system, encourage action, and awaken appetite for life. They speak of fire, vitality, and the courage to be seen.',
+    good:'Low energy, creative blocks, social withdrawal', avoid:'Already anxious or overstimulated' },
+  { title:'Cool Spectrum', swatch:'linear-gradient(135deg,#2E6B9E,#5B9FD4,#8ECAED)',
+    meaning:'Blues and teals slow the breath, lower the heart rate, and invite reflection. They carry the quality of deep water — clarity beneath the surface.',
+    good:'Stress, racing thoughts, overactivity', avoid:'Feeling already cold, distant, or low' },
+  { title:'Earth Greens', swatch:'linear-gradient(135deg,#3A6B45,#6A9E5A,#A0C880)',
+    meaning:'Greens are the great balancers — the colour of nature in equilibrium. They restore after overstimulation and ground during anxiety.',
+    good:'Recovery, balance-seeking, renewal', avoid:'Feeling stuck in routine or stagnant' },
+  { title:'Violet & Purple', swatch:'linear-gradient(135deg,#5A3A8A,#8A5AC8,#C0A0E8)',
+    meaning:'Violets and purples have long been associated with introspection, depth, and the liminal space between the ordinary and something more.',
+    good:'Meditation, inner work, creative ideation', avoid:'Feeling already detached from daily life' },
+  { title:'Earth Neutrals', swatch:'linear-gradient(135deg,#6B4820,#9B7040,#C0A080)',
+    meaning:'Browns, stones, and warm neutrals are the colours of the ground beneath your feet. They ask nothing of you. They simply hold you.',
+    good:'Overwhelm, grief, exhaustion', avoid:'Wanting creative stimulation or excitement' },
+  { title:'Rose & Blush', swatch:'linear-gradient(135deg,#B05070,#D48090,#F0C0C0)',
+    meaning:'Soft pinks and rose tones are associated with warmth, gentle self-compassion, and the kind of care that holds without demanding anything in return.',
+    good:'Self-criticism, loneliness, emotional coldness', avoid:'If you need clear-headed focus and action' }
+];
+
+function loadColorTherapy() {
+  const grid = document.getElementById('ct-grid');
+  grid.innerHTML = COLOR_THERAPY.map(c => `
+    <div class="ct-card">
+      <div class="ct-swatch" style="background:${c.swatch}"></div>
+      <div class="ct-title">${c.title}</div>
+      <p class="ct-meaning">${c.meaning}</p>
+      <div class="ct-label">Good for</div>
+      <div class="ct-good">${c.good}</div>
+    </div>`).join('');
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function animCount(id, from, to, dur) {
+  const el = document.getElementById(id);
+  const start = performance.now();
+  const tick = now => {
+    const p = Math.min((now - start) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = (from + (to - from) * e).toFixed(1);
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => toast(text + ' — copied'));
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── INITIALISE ─────────────────────────────────────────────────────────
+loadMoon();
+loadColorTherapy();
+loadJournal();
+</script>
+</body>
+</html>
